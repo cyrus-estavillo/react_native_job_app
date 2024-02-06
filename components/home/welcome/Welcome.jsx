@@ -31,7 +31,7 @@ const Welcome = () => {
             style={styles.searchInput}
             value = ""
             onChange = {() => {}}
-            placeHolder = "What are you looking for?"
+            placeholder = "What are you looking for?"
           />
         </View>
 
