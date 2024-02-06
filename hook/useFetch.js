@@ -26,7 +26,6 @@ const useFetch = (endpoint, query) => {
             const response = await axios.request(options);
 
             setData(response.data.data); // set the data to the response data
-            console.log(response.data.data);
             setIsLoading(false); // once we get the data we want to stop loading
         } catch (error) {
             setError(error);

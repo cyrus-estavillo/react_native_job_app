@@ -9,18 +9,14 @@ import PopularJobCard from '../../common/cards/popular/PopularJobCard';
 import useFetch from '../../../hook/useFetch';
 
 const Popularjobs = () => {
-  /*
-  return <View>
-    <Text>Popular Jobs</Text>
-  </View>
-  */
+  
   const router = useRouter();
   
   // destructure the data, isLoading, error from useFetch
   const { data, isLoading, error } = useFetch
     ('search', {
       query: 'React developer',
-      num_pages: 1
+      num_pages: "1",
     })
 
   return (
@@ -36,15 +32,16 @@ const Popularjobs = () => {
         {isLoading ? (
           <ActivityIndicator size="large" colors={COLORS.primary} />
         ) : error ? (
-          <Text>Something went wrong.</Text>
+          <Text>There was an error.</Text>
         ) : (
           <FlatList 
-            data={[1, 2, 3, 4]}
+            data={data}
             renderItem={({ item }) => (
               <PopularJobCard 
                 item={item}
               />
             )}
+            keyExtractor={(item) => item.job_id}
             contentContainerStyle= {{ columnGap: SIZES.medium }}
             horizontal
           />
