@@ -1,10 +1,8 @@
 import { Stack } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFonts } from 'expo-font'; // If you want to use custom fonts, use this library
 import * as SplashScreen from 'expo-splash-screen';
 
-// Makes the native splash screen stay visible until you call SplashScreen.hideAsync()
-SplashScreen.preventAutoHideAsync();
 
 const Layout = () => {
     const [fontsLoaded] = useFonts({
@@ -13,15 +11,29 @@ const Layout = () => {
         DMRegular: require('../assets/fonts/DMSans-Regular.ttf')
     })
 
+    const [isTimeout, setIsTimeout] = useState(false);
+
+    // Prevent the splash screen from hiding until the fonts are loaded
+    SplashScreen.preventAutoHideAsync();
+
+    useEffect(() => {
+        // Set a timeout for font loading
+        const fontLoadingTimeout = setTimeout(() => {
+            setIsTimeout(true);
+            console.log("Using fallback fonts due to timeout.");
+            // Ensure splash screen is hidden after timeout even if fonts don't load
+            SplashScreen.hideAsync();
+        }, 5000); // 5 seconds
+
+    }, []); // empty dependency array so it only runs once
+
+    // why is this sometimes taking so damn long
     const onLayoutRootView = useCallback(async () => {
-        if(fontsLoaded) {
+        if(fontsLoaded || isTimeout) {
+            console.log(fontsLoaded ? "Fonts loaded" : "Timeout reached");
             await SplashScreen.hideAsync();
         }
-        else {
-            console.log("Fonts are not loaded");
-            await SplashScreen.hideAsync();
-        }
-    }, [fontsLoaded])
+    }, [fontsLoaded, isTimeout])
 
     return <Stack onLayout = {onLayoutRootView} />
 }
